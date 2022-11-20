@@ -3,6 +3,7 @@
 import streamlit as st
 import pandas as pd
 from PIL import Image
+import plotly.express as px
 img = Image.open("I4Data.png")
 import os
 from i4data_f import *
@@ -16,7 +17,7 @@ sidebar = st.sidebar
 # Create a title for your app
 sidebar.title("I4Data")
 # Display the dataframe
-option = sidebar.selectbox('Select one option:',('table data analysis','text parser','text matching','other'))
+option = sidebar.selectbox('Select one option:',('table data analysis','topic modeling','text parser','text matching','other'))
 # st.write('You selected:', option)
 if option =='table data analysis':
     filename = sidebar.file_uploader('Open file:', type=["xlsx","csv"])
@@ -29,13 +30,86 @@ if option =='table data analysis':
     df_display = sidebar.checkbox("Display Raw Data", value=True)
     if len(df) > 0:
         if df_display:
-
-            st.write("Here is the dataset used in this analysis:")
-
+            st.write("Here is the raw dataset:")
+            st.write(f"Data size: {len(df)}*{len(df.columns)}")
             # Display the dataframe
             st.write(df)
+            cl_tup = tuple(sorted(df))
+            com_tup = ("==",">=","<=","!=",">","<","in","not in")
+            action = sidebar.selectbox('Select from options:',("filter based on vlaue of a column","clean the database","other"))
+            if action == "filter based on vlaue of a column":
+                column_selected = st.selectbox('Select the column:',cl_tup)
+                print(column_selected,type(column_selected))
+                comparison_selected = st.selectbox('Select the comparison method:',com_tup)
+                print(comparison_selected,type(comparison_selected))
+                if column_selected and comparison_selected:
+                    if comparison_selected in ["==",">=","<=","!=",">","<"]:
+                        value_wanted = st.selectbox("Select the value", pd.unique(df[column_selected]))
+                        try:
+                            vlaue_wanted = float(value_wanted)
+                        except:
+                            print("it is text")
+                        if com_tup == "==":
+                            df2 = df[df[column_selected] == value_wanted]
+                            print(value_wanted,type(value_wanted))
+                            st.write("Here is the filtered dataset:")
+                            st.write(f"Data size: {len(df2)}*{len(df2.columns)}")
+                            st.write(df2)
+                        elif com_tup == ">=":
+                            df2 = df[df[column_selected] >= value_wanted]
+                            print(value_wanted,type(value_wanted))
+                            st.write("Here is the filtered dataset:")
+                            st.write(f"Data size: {len(df2)}*{len(df2.columns)}")
+                            st.write(df2)
+                        elif com_tup == "<=":
+                            df2 = df[df[column_selected] <= value_wanted]
+                            print(value_wanted,type(value_wanted))
+                            st.write("Here is the filtered dataset:")
+                            st.write(f"Data size: {len(df2)}*{len(df2.columns)}")
+                            st.write(df2)
+                        elif com_tup == ">":
+                            df2 = df[df[column_selected] > value_wanted]
+                            print(value_wanted,type(value_wanted))
+                            st.write("Here is the filtered dataset:")
+                            st.write(f"Data size: {len(df2)}*{len(df2.columns)}")
+                            st.write(df2)
+                        elif com_tup == "<":
+                            df2 = df[df[column_selected] < value_wanted]
+                            print(value_wanted,type(value_wanted))
+                            st.write("Here is the filtered dataset:")
+                            st.write(f"Data size: {len(df2)}*{len(df2.columns)}")
+                            st.write(df2)
+                        elif com_tup == "!=":
+                            df2 = df[df[column_selected] != value_wanted]
+                            print(value_wanted,type(value_wanted))
+                            st.write("Here is the filtered dataset:")
+                            st.write(f"Data size: {len(df2)}*{len(df2.columns)}")
+                            st.write(df2)
+                    elif comparison_selected in ["in","not in"]:
+                        value_wanted = st.text_input("Type the list of values seperated by comma (,)")
+                        value_wanted = value_wanted.split(",")
+                        try:
+                            value_wanted = [float(i) for i in value_wanted]
+                        except:
+                            print("it is text")
+                        if com_tup == "in":
+                            df2 = df[df[column_selected] in value_wanted]
+                            print(value_wanted,type(value_wanted))
+                            st.write("Here is the filtered dataset:")
+                            st.write(f"Data size: {len(df2)}*{len(df2.columns)}")
+                            st.write(df2)
+                        elif com_tup == "not in":
+                            df2 = df[df[column_selected] not in value_wanted]
+                            print(value_wanted,type(value_wanted))
+                            st.write("Here is the filtered dataset:")
+                            st.write(f"Data size: {len(df2)}*{len(df2.columns)}")
+                            st.write(df2)
+                    
+                
+        
     else:
         st.write("The file size surpasses the limit")
+        
 elif option == 'text matching':
     input_type = sidebar.selectbox('Select input type:',('text','file','other'))
     # st.write('You selected:', input_type)
@@ -50,9 +124,7 @@ elif option == 'text matching':
                 i+=1
             else:
                 break
-            # print(text)
-            # if text:
-            #     st.write(f"{filename.name}: {text}")
+            
         text1 = texts[0]
         text2 = texts[1]
     else:

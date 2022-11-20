@@ -63,7 +63,7 @@ def TFIDF(text1,text2,split_with="\n",score_lim=0.5):
     # print("done")
     similarity = []
     indices = pd.Series(metadata.index, index=metadata['title'])
-    cosine_sim = cosine_similarity(tfidf_matrix, tfidf_matrix)[len(sentences1):][:len(sentences2)]
+    cosine_sim = cosine_similarity(tfidf_matrix, tfidf_matrix)[:len(sentences1)][len(sentences1):]
     for i in range(len(sentences1)):
         row = get_recommendations(title=sentences1[i], cosine_sim=cosine_sim, indices=indices, score_lim=score_lim)
         newlist = [all_sen[i] for i in row["t2"]]
