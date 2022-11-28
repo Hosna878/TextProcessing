@@ -1,32 +1,4 @@
-Skip to content
-Search or jump to…
-Pull requests
-Issues
-Codespaces
-Marketplace
-Explore
- 
-@Hosna878 
-Hosna878
-/
-work
-Private
-Code
-Issues
-Pull requests
-Actions
-Projects
-Wiki
-Security
-Insights
-Settings
-work/TextParser.py /
-@Hosna878
-Hosna878 Add files via upload
-Latest commit 5d6420c 4 days ago
- History
- 1 contributor
-1317 lines (1237 sloc)  69.3 KB
+
 
 """
 This script includes all the functions used in the feature extraction from job descriptions
